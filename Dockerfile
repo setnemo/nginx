@@ -71,6 +71,6 @@ RUN set -ex \
         && ln -sf /dev/stderr /var/log/nginx/error.log \
         && apk add --no-cache supervisor \
         && mkdir -p /var/log/supervisor \
-        && chmod +x /start.sh
+        && chmod +x /usr/bin/start.sh
 WORKDIR /var/www/html
 CMD ["/usr/bin/start.sh"]
