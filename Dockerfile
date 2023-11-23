@@ -55,8 +55,8 @@ RUN set -ex \
 FROM ${NGINX_FROM_IMAGE}
 COPY --from=builder /tmp/packages /tmp/packages
 WORKDIR /
-COPY ["conf/supervisord.conf", "/etc/supervisord.conf"]
-COPY ["start.sh", "/usr/bin"]
+COPY conf/supervisord.conf /etc/supervisord.conf
+COPY start.sh /usr/bin/start.sh
 RUN set -ex \
     && . /tmp/packages/modules.env \
     && for module in $BUILT_MODULES; do \
