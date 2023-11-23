@@ -1,13 +1,7 @@
 ARG NGINX_FROM_IMAGE=nginx:mainline-alpine
-
 FROM ${NGINX_FROM_IMAGE} as builder
-
-USER root
-
 WORKDIR /var/www/html
-
 COPY ./ /modules/
-
 ENV EMABLED_MODULES='encrypted-session geoip geoip2 headers-more image-filter njs xslt';
 RUN set -ex \
     && apk update \
@@ -61,6 +55,7 @@ RUN set -ex \
 
 FROM ${NGINX_FROM_IMAGE}
 COPY --from=builder /tmp/packages /tmp/packages
+COPY ./start.sh /start.sh
 RUN set -ex \
     && . /tmp/packages/modules.env \
     && for module in $BUILT_MODULES; do \
