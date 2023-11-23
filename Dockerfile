@@ -59,7 +59,6 @@ WORKDIR "/root"
 COPY conf/default.conf /etc/nginx/conf.d/default.conf
 COPY conf/nginx.conf /etc/nginx/nginx.conf
 COPY conf/supervisord.conf /etc/supervisord.conf
-COPY start.sh /start.sh
 RUN set -ex \
     && . /tmp/packages/modules.env \
     && for module in $BUILT_MODULES; do \
@@ -73,8 +72,6 @@ RUN set -ex \
         && ln -sf /dev/stdout /var/log/nginx/access.log \
         && ln -sf /dev/stderr /var/log/nginx/error.log \
         && apk add --no-cache supervisor bash bash-completion shadow make gcc clang vim bat \
-        && mkdir -p /var/log/supervisor \
-        && chmod +x /start.sh
-RUN sed -i "s/user  nginx/user www-data/g" /etc/nginx/nginx.conf
+        && mkdir -p /var/log/supervisor
 WORKDIR /var/www/html
-CMD ["/start.sh"]
+CMD ["nginx", "-g", "daemon off;"]
