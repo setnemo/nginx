@@ -76,4 +76,4 @@ RUN set -ex \
         && mkdir -p /var/log/supervisor \
         && chmod +x /start.sh
 WORKDIR /var/www/html
-CMD ["bash", "-c", "/start.sh"]
+CMD ["/start.sh"]
