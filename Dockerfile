@@ -1,8 +1,7 @@
 ARG NGINX_FROM_IMAGE=nginx:mainline-alpine
 FROM ${NGINX_FROM_IMAGE} as builder
-WORKDIR /var/www/html
 COPY ./ /modules/
-ENV EMABLED_MODULES='encrypted-session geoip geoip2 headers-more image-filter njs xslt';
+ENV EMABLED_MODULES="encrypted-session geoip geoip2 headers-more image-filter njs xslt";
 RUN set -ex \
     && apk update \
     && apk add linux-headers openssl-dev pcre2-dev zlib-dev openssl abuild \
@@ -55,7 +54,9 @@ RUN set -ex \
 
 FROM ${NGINX_FROM_IMAGE}
 COPY --from=builder /tmp/packages /tmp/packages
-COPY ./start.sh /start.sh
+WORKDIR /
+COPY ["conf/supervisord.conf", "/etc/supervisord.conf"]
+COPY ["start.sh", "/usr/bin"]
 RUN set -ex \
     && . /tmp/packages/modules.env \
     && for module in $BUILT_MODULES; do \
@@ -68,6 +69,8 @@ RUN set -ex \
     # forward request and error logs to docker log collector
         && ln -sf /dev/stdout /var/log/nginx/access.log \
         && ln -sf /dev/stderr /var/log/nginx/error.log \
+        && apk add --no-cache supervisor \
+        && mkdir -p /var/log/supervisor \
         && chmod +x /start.sh
-
-CMD ["/start.sh"]
+WORKDIR /var/www/html
+CMD ["/usr/bin/start.sh"]
