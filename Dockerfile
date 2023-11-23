@@ -54,9 +54,10 @@ RUN set -ex \
 
 FROM ${NGINX_FROM_IMAGE}
 COPY --from=builder /tmp/packages /tmp/packages
-WORKDIR /
+USER root
+WORKDIR "/root"
 COPY conf/supervisord.conf /etc/supervisord.conf
-COPY start.sh /usr/bin/start.sh
+COPY start.sh /root/start.sh
 RUN set -ex \
     && . /tmp/packages/modules.env \
     && for module in $BUILT_MODULES; do \
@@ -71,6 +72,6 @@ RUN set -ex \
         && ln -sf /dev/stderr /var/log/nginx/error.log \
         && apk add --no-cache supervisor \
         && mkdir -p /var/log/supervisor \
-        && chmod +x /usr/bin/start.sh
+        && chmod +x /root/start.sh
 WORKDIR /var/www/html
-CMD ["/usr/bin/start.sh"]
+CMD ["sh", "-c", "/root/start.sh"]

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Set custom webroot
 if [ ! -z "$WEBROOT" ]; then
