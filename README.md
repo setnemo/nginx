@@ -21,6 +21,8 @@ services:
       CREATE_LARAVEL_STORAGE: '1'
       PHPFPMHOST: 'laravel'
       RUN_SCRIPTS: '1' # /var/www/html/scripts
+      UID:
+      GID:
     ports:
       - '${APP_PORT:-80}:80'
     volumes:
