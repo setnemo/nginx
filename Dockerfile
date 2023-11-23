@@ -56,6 +56,8 @@ FROM ${NGINX_FROM_IMAGE}
 COPY --from=builder /tmp/packages /tmp/packages
 USER root
 WORKDIR "/root"
+COPY conf/default.conf /etc/nginx/conf.d/default.conf
+COPY conf/nginx.conf /etc/nginx/nginx.conf
 COPY conf/supervisord.conf /etc/supervisord.conf
 COPY start.sh /root/start.sh
 RUN set -ex \
