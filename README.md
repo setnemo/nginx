@@ -1,71 +1,4 @@
-# Nginx + php-fpm (v8) + nodejs
-
-Based on php:8.1.5-fpm-alpine3.15, node:18.1.0-alpine3.15 (nodejs is not included in most of other nginx-php images...but needed by a lot of php frameworks), with nginx:alpine and richarvey/nginx-php-fpm's Docker script
-
-Tags:
-* latest, php:8.2.12-fpm-alpine3.18
-
-## PHP Modules
-
-In this image it contains following PHP modules:
-
-```
-# php -m
-[PHP Modules]
-bcmath
-Core
-ctype
-curl
-date
-dom
-fileinfo
-filter
-ftp
-gd
-hash
-iconv
-igbinary
-imap
-intl
-json
-ldap
-libxml
-mbstring
-memcached
-msgpack
-mysqli
-mysqlnd
-openssl
-pcre
-PDO
-pdo_mysql
-pdo_pgsql
-pdo_sqlite
-pgsql
-Phar
-posix
-readline
-redis
-Reflection
-session
-SimpleXML
-soap
-sockets
-sodium
-SPL
-sqlite3
-standard
-tokenizer
-xml
-xmlreader
-xmlwriter
-Zend OPcache
-zip
-zlib
-
-[Zend Modules]
-Zend OPcache
-```
+# Nginx
 
 ## How to use
 
@@ -81,17 +14,33 @@ Make sure you have correct environment parameters set:
 # For more information: https://laravel.com/docs/sail
 version: '3'
 services:
+  nginx:
+    image: ghcr.io/setnemo/nginx:latest
+    environment:
+      WEBROOT: '/var/www/html/public'
+      CREATE_LARAVEL_STORAGE: '1'
+      PHPFPMHOST: 'laravel'
+      REAL_IP_HEADER: '1'
+      REAL_IP_FROM: '1'
+    ports:
+      - '${APP_PORT:-80}:80'
+    volumes:
+      - '.:/var/www/html'
+    networks:
+      - sail
+    depends_on:
+      - laravel
   laravel:
     image: ghcr.io/setnemo/php:latest
     environment:
       WEBROOT: '/var/www/html/public'
       PHP_REDIS_SESSION_HOST: 'redis'
       CREATE_LARAVEL_STORAGE: '1'
+      ENABLE_XDEBUG: '1'
       PHP_ERRORS_STDERR: '1'
       TZ: 'Europe/Kyiv'
     ports:
-      - '${APP_PORT:-80}:80'
-      - '${VITE_PORT:-5173}:5173'
+      - '9000:9000'
     volumes:
       - '.:/var/www/html'
     networks:
