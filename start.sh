@@ -8,7 +8,7 @@ else
 fi
 
 if [ ! -z "$PHPFPMHOST" ]; then
-    sed -i "s#fastcgi_pass php-fpm:9000#fastcgi_pass ${$PHPFPMHOST}:9000;#g" /etc/nginx/conf.d/default.conf
+    sed -i "s#fastcgi_pass php-fpm:9000#fastcgi_pass ${PHPFPMHOST}:9000;#g" /etc/nginx/conf.d/default.conf
 else
     webroot=/var/www/html
 fi
