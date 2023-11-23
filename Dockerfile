@@ -75,11 +75,6 @@ RUN set -ex \
         && apk add --no-cache supervisor bash bash-completion shadow make gcc clang vim bat \
         && mkdir -p /var/log/supervisor \
         && chmod +x /start.sh
-ENV UID=1000
-ENV GID=1000
-RUN delgroup dialout
-RUN addgroup -g ${GID} --system laravel
-RUN adduser -G laravel --system -D -s /bin/sh -u ${UID} laravel
-RUN sed -i "s/user  nginx/user laravel/g" /etc/nginx/nginx.conf
+RUN sed -i "s/user  nginx/user www-data/g" /etc/nginx/nginx.conf
 WORKDIR /var/www/html
 CMD ["/start.sh"]
